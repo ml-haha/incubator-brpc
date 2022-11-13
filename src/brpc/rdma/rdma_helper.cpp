@@ -326,8 +326,14 @@ static void OnRdmaAsyncEvent(Socket* m) {
 static int ReadRdmaDynamicLib() {
     g_handle_ibverbs = dlopen("libibverbs.so", RTLD_LAZY);
     if (!g_handle_ibverbs) {
-        LOG(ERROR) << "Fail to load libibverbs.so due to " << dlerror();
-        return -1;
+        LOG(WARNING) << "Failed to load libibverbs.so " << dlerror() << " try libibverbs.so.1";
+        // Clear existing error
+        dlerror();
+        g_handle_ibverbs = dlopen("libibverbs.so.1", RTLD_LAZY);
+        if (!g_handle_ibverbs) {
+            LOG(ERROR) << "Fail to load libibverbs.so.1 due to " << dlerror();
+            return -1;
+        }
     }
 
     LoadSymbol(g_handle_ibverbs, IbvGetDeviceList, "ibv_get_device_list");
@@ -632,5 +638,20 @@ bool SupportedByRdma(std::string protocol) {
 
 }  // namespace rdma
 }  // namespace brpc
+
+#else
+
+#include <stdlib.h>
+#include "butil/logging.h"
+
+namespace brpc {
+namespace rdma {
+void GlobalRdmaInitializeOrDie() {
+    LOG(ERROR) << "brpc is not compiled with rdma. To enable it, please refer to "
+               << "https://github.com/apache/incubator-brpc/blob/master/docs/en/rdma.md";
+    exit(1);
+}
+}
+}
 
 #endif  // if BRPC_WITH_RDMA
