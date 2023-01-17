@@ -194,6 +194,8 @@ int main(int argc, char* argv[]) {
     options.mutable_ssl_options()->default_cert.certificate = FLAGS_certificate;
     options.mutable_ssl_options()->default_cert.private_key = FLAGS_private_key;
     options.mutable_ssl_options()->ciphers = FLAGS_ciphers;
+    options.mutable_ssl_options()->alpn = brpc::GeneratedProtocolsSSLAlpn({brpc::ProtocolType::PROTOCOL_HTTP,brpc::ProtocolType::PROTOCOL_H2});
+    //server.EnableHttpAlpn();
     if (server.Start(FLAGS_port, &options) != 0) {
         LOG(ERROR) << "Fail to start HttpServer";
         return -1;

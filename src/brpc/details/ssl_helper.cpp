@@ -207,6 +207,27 @@ static DH* SSLGetDHCallback(SSL* ssl, int exp, int keylen) {
 }
 #endif  // OPENSSL_NO_DH
 
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+static int SSLAlpnSelectCallback(SSL *ssl, const unsigned char **out,
+                                unsigned char *outlen, const unsigned char *in,
+                                unsigned int inlen, void *arg) {
+    (void)ssl;
+    std::string *srv = (std::string *)(arg);
+    // #define BRPC_HTTP_ALPN_ADVERTISE       "\x02h2\x08http/1.1"
+    // uint8_t *srv = (uint8_t *) BRPC_HTTP_ALPN_ADVERTISE;
+    // uint32_t srvlen = sizeof(BRPC_HTTP_ALPN_ADVERTISE) - 1;
+    LOG(INFO)<<"SSLAlpnSelectCallback server="<<*srv;
+    if (SSL_select_next_proto((unsigned char **) out, outlen, 
+                              (unsigned char *)srv->data(),
+                              srv->size(), in, inlen) != OPENSSL_NPN_NEGOTIATED) {
+        return SSL_TLSEXT_ERR_NOACK;
+    }
+   
+    LOG(INFO)<<"SSL_TLSEXT_ERR_OK";
+    return SSL_TLSEXT_ERR_OK;
+}
+
+#endif /* OPENSSL_VERSION_NUMBER >= 0x10002000L */
 void ExtractHostnames(X509* x, std::vector<std::string>* hostnames) {
 #ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
     STACK_OF(GENERAL_NAME)* names = (STACK_OF(GENERAL_NAME)*)
@@ -520,7 +541,10 @@ SSL_CTX* CreateServerSSLContext(const std::string& certificate,
 #endif
 
 #endif  // OPENSSL_NO_DH
-
+    #if OPENSSL_VERSION_NUMBER >= 0x10002000L
+    // ALPN selection callback
+    SSL_CTX_set_alpn_select_cb(ssl_ctx.get(), SSLAlpnSelectCallback, (void*)&options.alpn);
+    #endif // OPENSSL_VERSION_NUMBER >= 0x10002000L
     return ssl_ctx.release();
 }
 

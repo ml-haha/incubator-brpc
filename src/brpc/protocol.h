@@ -195,6 +195,9 @@ const Protocol* FindProtocol(ProtocolType type);
 void ListProtocols(std::vector<Protocol>* vec);
 void ListProtocols(std::vector<std::pair<ProtocolType, Protocol> >* vec);
 
+ProtocolType SelectProtocolByAlpn(const butil::StringPiece& sp);
+const char* GetProtocolAlpnString(ProtocolType type);
+std::string GeneratedProtocolsSSLAlpn(const std::vector<ProtocolType>& types);
 // The common serialize_request implementation used by many protocols.
 void SerializeRequestDefault(butil::IOBuf* buf,
                              Controller* cntl,

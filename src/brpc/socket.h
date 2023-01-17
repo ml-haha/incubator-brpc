@@ -171,6 +171,7 @@ struct SocketSSLContext {
 
     SSL_CTX* raw_ctx;           // owned
     std::string sni_name;       // useful for clients
+    std::string alpn;
 };
 
 // TODO: Comment fields
@@ -690,6 +691,7 @@ friend void DereferenceSocket(Socket*);
 
     void CancelUnwrittenBytes(size_t bytes);
 
+    void SelectAlpnIndex();
 private:
     // unsigned 32-bit version + signed 32-bit referenced-count.
     // Meaning of version:

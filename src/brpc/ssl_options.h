@@ -84,6 +84,10 @@ struct ChannelSSLOptions {
     // Default: see above
     VerifyOptions verify;
 
+    // When set,fill this into the ALPN extension to the server as 
+    // part of the TLS ClientHello message
+    // Default: false
+    bool alpn;
     // TODO: Support CRL
 };
 
@@ -148,7 +152,7 @@ struct ServerSSLOptions {
     // Default: see above
     VerifyOptions verify;
 
-    // TODO: Support NPN & ALPN
+    std::string alpn;
     // TODO: Support OSCP stapling
 };
 

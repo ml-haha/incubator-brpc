@@ -234,6 +234,7 @@ protected:
     butil::intrusive_ptr<SharedLoadBalancer> _lb;
     ChannelOptions _options;
     int _preferred_index;
+    std::string _alpn;
 };
 
 enum ChannelOwnership {

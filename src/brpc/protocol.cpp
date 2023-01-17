@@ -264,4 +264,36 @@ void LogErrorTextAndDelete::operator()(Controller* c) const {
     }
 }
 
+const char* GetProtocolAlpnString(ProtocolType type){
+    switch(type){
+        case ProtocolType::PROTOCOL_HTTP: return "\x08http/1.1";
+        case ProtocolType::PROTOCOL_H2: return "\x02h2";
+        default: return nullptr;
+    }
+    return nullptr;
+}
+
+ProtocolType SelectProtocolByAlpn(const butil::StringPiece& sp) {
+    if (sp.size() == 2 && sp[0] == 'h' && sp[1] == '2') {
+        return PROTOCOL_H2;
+    } else if (sp.size() == 8 && memcmp(sp.data(), "http/1.1", sp.size()) == 0) {
+        return PROTOCOL_HTTP;
+    }
+    return PROTOCOL_UNKNOWN;
+}
+
+std::string GeneratedProtocolsSSLAlpn(const std::vector<ProtocolType>& types) {
+    std::string ret;
+    ret.reserve(18);
+    for (const auto& it : types) {
+        butil::StringPiece sp = GetProtocolAlpnString(it);
+        if (!sp.empty()) {
+            sp.AppendToString(&ret);
+        } else {
+            LOG(WARNING) << "Unsupport alpn protocol=" << (int)it;
+        }
+    }
+    return ret;
+}
+
 } // namespace brpc

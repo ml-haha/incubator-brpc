@@ -31,7 +31,7 @@ DEFINE_string(load_balancer, "", "The algorithm for load balancing");
 DEFINE_int32(timeout_ms, 2000, "RPC timeout in milliseconds");
 DEFINE_int32(max_retry, 3, "Max retries(not including the first RPC)"); 
 DEFINE_string(protocol, "http", "Client-side protocol");
-
+DEFINE_bool(alpn, false, "Client-side use alpn");
 namespace brpc {
 DECLARE_bool(http_verbose);
 }
@@ -53,7 +53,10 @@ int main(int argc, char* argv[]) {
     options.protocol = FLAGS_protocol;
     options.timeout_ms = FLAGS_timeout_ms/*milliseconds*/;
     options.max_retry = FLAGS_max_retry;
-
+    if(FLAGS_alpn){
+        options.mutable_ssl_options()->alpn = FLAGS_alpn; 
+    }
+    //options.mutable_ssl_options()->alpn = FLAGS_alpn; 
     // Initialize the channel, NULL means using default options. 
     // options, see `brpc/channel.h'.
     if (channel.Init(url, FLAGS_load_balancer.c_str(), &options) != 0) {

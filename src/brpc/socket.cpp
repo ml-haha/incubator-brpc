@@ -1867,6 +1867,10 @@ int Socket::SSLHandshake(int fd, bool server_mode) {
         LOG(ERROR) << "Fail to CreateSSLSession";
         return -1;
     }
+    if(!server_mode && !_ssl_ctx->alpn.empty()) {
+        SSL_set_alpn_protos(_ssl_session, 
+            (const unsigned char*)_ssl_ctx->alpn.data(), _ssl_ctx->alpn.size());
+    }
 #if defined(SSL_CTRL_SET_TLSEXT_HOSTNAME) || defined(USE_MESALINK)
     if (!_ssl_ctx->sni_name.empty()) {
         SSL_set_tlsext_host_name(_ssl_session, _ssl_ctx->sni_name.c_str());
@@ -1883,6 +1887,9 @@ int Socket::SSLHandshake(int fd, bool server_mode) {
         if (rc == 1) {
             _ssl_state = SSL_CONNECTED;
             AddBIOBuffer(_ssl_session, fd, FLAGS_ssl_bio_buffer_size);
+            if(server_mode){
+                SelectAlpnIndex();
+            }
             return 0;
         }
 
@@ -2769,6 +2776,27 @@ std::string Socket::description() const {
     }
     butil::string_appendf(&result, "} (0x%p)", this);
     return result;
+}
+
+void Socket::SelectAlpnIndex()
+{
+#if OPENSSL_VERSION_NUMBER >= 0x10002000L
+    const unsigned char* alpn = NULL;
+    unsigned int alpnlen = 0;
+#ifndef OPENSSL_NO_NEXTPROTONEG
+    SSL_get0_next_proto_negotiated(_ssl_session, &alpn, &alpnlen);
+#endif /* !OPENSSL_NO_NEXTPROTONEG */
+
+    if (alpn == NULL) {
+        SSL_get0_alpn_selected(_ssl_session, &alpn, &alpnlen);
+    }
+    if (alpnlen > 0) {
+      ProtocolType type = SelectProtocolByAlpn({(const char* )alpn, alpnlen});
+        if (type != ProtocolType::PROTOCOL_UNKNOWN) {
+            set_preferred_index((int)type);
+        }
+    }
+#endif /* OPENSSL_VERSION_NUMBER >= 0x10002000L */
 }
 
 SocketSSLContext::SocketSSLContext()
