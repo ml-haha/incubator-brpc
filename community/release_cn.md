@@ -165,9 +165,9 @@ Version:	1.0.0
 ## 3. 创建发布 tag
 拉取发布分支，并推送tag
 ```bash
-git clone -b release-1.0 git@github.com:apache/incubator-brpc.git ~/incubator-brpc
+git clone -b release-1.0 git@github.com:apache/brpc.git ~/brpc
 
-cd ~/incubator-brpc
+cd ~/brpc
 
 git tag -a 1.0.0 -m "release 1.0.0"
 
@@ -208,7 +208,7 @@ mkdir -p ~/brpc_svn/dev/
 
 cd ~/brpc_svn/dev/
 
-svn --username=lorinlee co https://dist.apache.org/repos/dist/dev/incubator/brpc/
+svn --username=lorinlee co https://dist.apache.org/repos/dist/dev/brpc/
 
 cd ~/brpc_svn/dev/brpc
 ```
@@ -228,11 +228,11 @@ mkdir -p ~/brpc_svn/dev/brpc/1.0.0
 
 cd ~/brpc_svn/dev/brpc/1.0.0
 
-cp ~/incubator-brpc/apache-brpc-1.0.0-incubating-src.tar.gz ~/brpc_svn/dev/brpc/1.0.0
+cp ~/brpc/apache-brpc-1.0.0-incubating-src.tar.gz ~/brpc_svn/dev/brpc/1.0.0
 
-cp ~/incubator-brpc/apache-brpc-1.0.0-incubating-src.tar.gz.asc ~/brpc_svn/dev/brpc/1.0.0
+cp ~/brpc/apache-brpc-1.0.0-incubating-src.tar.gz.asc ~/brpc_svn/dev/brpc/1.0.0
 
-cp ~/incubator-brpc/apache-brpc-1.0.0-incubating-src.tar.gz.sha512 ~/brpc_svn/dev/brpc/1.0.0
+cp ~/brpc/apache-brpc-1.0.0-incubating-src.tar.gz.sha512 ~/brpc_svn/dev/brpc/1.0.0
 ```
 
 ## 4. 提交SVN
@@ -259,7 +259,7 @@ sha512sum --check apache-brpc-1.0.0-incubating-src.tar.gz.sha512
 首先导入发布人公钥。从svn仓库导入KEYS到本地环境。（发布版本的人不需要再导入，帮助做验证的人需要导入，用户名填发版人的即可）
 
 ```bash
-curl https://dist.apache.org/repos/dist/dev/incubator/brpc/KEYS >> KEYS
+curl https://dist.apache.org/repos/dist/dev/brpc/KEYS >> KEYS
 
 gpg --import KEYS
 ```
@@ -305,13 +305,13 @@ gpg --verify apache-brpc-1.0.0-incubating-src.tar.gz.asc apache-brpc-1.0.0-incub
 ### 1. 对比源码包与github上的tag内容差异
 
 ```bash
-curl -Lo tag-1.0.0.tar.gz https://github.com/apache/incubator-brpc/archive/refs/tags/1.0.0.tar.gz
+curl -Lo tag-1.0.0.tar.gz https://github.com/apache/brpc/archive/refs/tags/1.0.0.tar.gz
 
 tar xvzf tag-1.0.0.tar.gz
 
 tar xvzf apache-brpc-1.0.0-incubating-src.tar.gz
 
-diff -r incubator-brpc-1.0.0 apache-brpc-1.0.0-incubating-src
+diff -r brpc-1.0.0 apache-brpc-1.0.0-incubating-src
 ```
 
 ### 2. 检查源码包的文件内容
@@ -357,16 +357,16 @@ This is a call for vote to release Apache brpc (Incubating) version
 - xxx
 
 The release candidates:
-https://dist.apache.org/repos/dist/dev/incubator/brpc/1.0.0/
+https://dist.apache.org/repos/dist/dev/brpc/1.0.0/
 
 Git tag for the release:
-https://github.com/apache/incubator-brpc/releases/tag/1.0.0
+https://github.com/apache/brpc/releases/tag/1.0.0
 
 Release Commit ID:
-https://github.com/apache/incubator-brpc/commit/xxx
+https://github.com/apache/brpc/commit/xxx
 
 Keys to verify the Release Candidate:
-https://dist.apache.org/repos/dist/dev/incubator/brpc/KEYS
+https://dist.apache.org/repos/dist/dev/brpc/KEYS
 
 The vote will be open for at least 72 hours or until the necessary number of
 votes are reached.
@@ -433,12 +433,12 @@ LorinLee
 ## 1. 更新GPG签名
 
 ```
-svn delete https://dist.apache.org/repos/dist/release/incubator/brpc/KEYS -m "delete KEYS"
+svn delete https://dist.apache.org/repos/dist/release/brpc/KEYS -m "delete KEYS"
 
-svn cp https://dist.apache.org/repos/dist/dev/incubator/brpc/KEYS https://dist.apache.org/repos/dist/release/incubator/brpc/KEYS -m "update brpc KEYS"
+svn cp https://dist.apache.org/repos/dist/dev/brpc/KEYS https://dist.apache.org/repos/dist/release/brpc/KEYS -m "update brpc KEYS"
 ```
 
-提交完svn后，访问 <https://downloads.apache.org/incubator/brpc/KEYS>，检查内容有没有更新，可能需要等几分钟时间，等内容更新了，再继续下一步。
+提交完svn后，访问 <https://downloads.apache.org/brpc/KEYS>，检查内容有没有更新，可能需要等几分钟时间，等内容更新了，再继续下一步。
 
 ## 2. 投票阶段
 
@@ -476,13 +476,13 @@ brpc community vote thread: xxx
 Vote result thread: xxx
 
 The release candidate:
-https://dist.apache.org/repos/dist/dev/incubator/brpc/1.0.0/
+https://dist.apache.org/repos/dist/dev/brpc/1.0.0/
 
 This release has been signed with a PGP available here:
-https://downloads.apache.org/incubator/brpc/KEYS
+https://downloads.apache.org/brpc/KEYS
 
 Git tag for the release:
-https://github.com/apache/incubator-brpc/releases/tag/1.0.0
+https://github.com/apache/brpc/releases/tag/1.0.0
 
 Build guide and get started instructions can be found at:
 https://brpc.apache.org/docs/getting_started
@@ -544,21 +544,21 @@ Apache brpc (Incubating) community
 ## 1. 将发布包从Apache SVN仓库 dist/dev 移动至 dist/release
 
 ```
-svn mv https://dist.apache.org/repos/dist/dev/incubator/brpc/1.0.0 https://dist.apache.org/repos/dist/release/incubator/brpc/1.0.0 -m "release brpc 1.0.0"
+svn mv https://dist.apache.org/repos/dist/dev/brpc/1.0.0 https://dist.apache.org/repos/dist/release/brpc/1.0.0 -m "release brpc 1.0.0"
 ```
 
 ## 2. Github版本发布
 
-在 [GitHub Releases 页面](https://github.com/apache/incubator-brpc/tags)的对应版本上点击，创建新的Release页面
+在 [GitHub Releases 页面](https://github.com/apache/brpc/tags)的对应版本上点击，创建新的Release页面
 编辑版本号及版本说明，并点击 Publish release
 
 ## 3. 更新下载页面
 
-等待并确认新的发布版本同步至 Apache 镜像后，更新如下页面：<https://brpc.apache.org/docs/downloadbrpc/>, 更新方式在 <https://github.com/apache/incubator-brpc-website/> 仓库中，注意中英文都要更新。
+等待并确认新的发布版本同步至 Apache 镜像后，更新如下页面：<https://brpc.apache.org/docs/downloadbrpc/>, 更新方式在 <https://github.com/apache/brpc-website/> 仓库中，注意中英文都要更新。
 
-GPG签名文件和哈希校验文件的下载链接应该使用这个前缀：https://downloads.apache.org/incubator/brpc/
+GPG签名文件和哈希校验文件的下载链接应该使用这个前缀：https://downloads.apache.org/brpc/
 
-代码包的下载链接应该使用这个前缀：https://dlcdn.apache.org/incubator/brpc/
+代码包的下载链接应该使用这个前缀：https://dlcdn.apache.org/brpc/
 
 ## 4. 发送邮件通知发布完成
 
@@ -597,12 +597,12 @@ The release is available for download at:
 https://brpc.apache.org/docs/downloadbrpc/
 
 The release notes can be found here:
-https://github.com/apache/incubator-brpc/releases/tag/1.0.0
+https://github.com/apache/brpc/releases/tag/1.0.0
 
 Website: http://brpc.apache.org/
 
 brpc(Incubating) Resources:
-- Issue: https://github.com/apache/incubator-brpc/issues/
+- Issue: https://github.com/apache/brpc/issues/
 - Mailing list: dev@brpc.apache.org
 - Documents: https://brpc.apache.org/docs/
 
