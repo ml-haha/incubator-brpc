@@ -2019,7 +2019,7 @@ int Server::ResetCertificates(const std::vector<CertInfo>& certs) {
         return -1;
     }
 
-    // Add default certficiate into tmp_map first since it can't be reloaded
+    // Add default certificate into tmp_map first since it can't be reloaded
     std::string default_cert_key =
         _options.ssl_options().default_cert.certificate
         + _options.ssl_options().default_cert.private_key;
@@ -2108,7 +2108,7 @@ bool Server::ClearCertMapping(CertMaps& bg) {
 
 int Server::ResetMaxConcurrency(int max_concurrency) {
     if (!IsRunning()) {
-        LOG(WARNING) << "ResetMaxConcurrency is only allowd for a Running Server";
+        LOG(WARNING) << "ResetMaxConcurrency is only allowed for a Running Server";
         return -1;
     }
     // Assume that modifying int32 is atomical in X86
